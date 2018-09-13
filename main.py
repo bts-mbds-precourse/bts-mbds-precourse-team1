@@ -29,6 +29,9 @@ if __name__ == '__main__':
     pd.set_option('display.max_columns', 500)
     pd.set_option('display.width', 1000)
 
+    '''
+    General data importing
+    '''
     # local path to the file containing the temperature data
     path = '/Users/jonascristens/Documents/BTS/precourse/project/GlobalLandTemperaturesByMajorCity.csv'
 
@@ -41,6 +44,9 @@ if __name__ == '__main__':
     # display the column names of the DataFrame
     print(list(data.columns))
 
+    '''
+    Data quality checking
+    '''
     # display the rows where the specified column is unknown
     for i in list(data.columns):
         #print(i)
@@ -54,17 +60,36 @@ if __name__ == '__main__':
     unknown_values = unknown_rows_per_col('AverageTemperature')
 
     # max unknown date in the data set (the dt.date is used to convert the datetime to a date only)
-    max_unknown_date = unknown_values['dt'].dt.date.max()
+    #max_unknown_date = unknown_values['dt'].dt.date.max()
 
     # find the rows which have NaN in the AverageTemperature for the max missing date
     #print(unknown_values.loc[unknown_values['dt'].dt.date == max_unknown_date, :])
 
+    # display the number of missing values per group
+    unknown_values1 = unknown_values.drop(['dt', 'AverageTemperatureUncertainty', 'Latitude', 'Longitude'], axis=1)
+    unknown_values2 = unknown_values1.fillna(0).groupby(['Country', 'City']).count()
+    print(unknown_values2)
+
+    # validate the number of rows missing
+    print(unknown_values.loc[unknown_values['City'] == 'Melbourne', :])
+
+    '''
+    Data manipulation
+    '''
+    #grouped_by_city = data.groupby(['City', 'Country']).mean()
+
+    # length of unique countries
+    #print(len(data.Country.unique()))
+
     # count of rows per city
     #print(count_per_column('City'))
+
+    # define city, country and dt as index
+    #data = data.set_index(['City', 'Country', 'dt'])
 
     # TODO: Discuss what are we going to do with the missing values?
     # TODO: Take the average of the same city of x years?
     # TODO: Leaving them out will have a significant impact on the results.
 
-    print('It works')
+    print('\nIt works')
 

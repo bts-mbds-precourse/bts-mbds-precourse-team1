@@ -37,4 +37,4 @@ If convenient, show some examples of the results you obtained during the project
     
 # References
 Data source: https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data/home
-Released UnderCC BY-NC-SA 4.0 
+Released Under following license: CC BY-NC-SA 4.0 

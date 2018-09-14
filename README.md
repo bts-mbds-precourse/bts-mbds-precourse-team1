@@ -13,8 +13,7 @@ Welcome to the guide repository. In this README you have some tips and all the d
 
 # Project Description / Abstract
 
-Few lines explaining what your project consist on is always useful, so people don't have to read the code to understand what you are doing.
-
+This project examines a collection of global temperature time series (monthly frequency) for major cities collected by Berkeley Earth from other primary sources.  Various trends and ...
 # Dataset
 
 You should include some lines explaining the dataset you are using, together with the link where you can download the data (if dealing with a public dataset).

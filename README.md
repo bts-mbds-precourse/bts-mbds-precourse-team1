@@ -1,10 +1,8 @@
-# Master in Big Data Solutions Guide Repository
+# Master in Big Data Solutions Team 1
 
 Welcome to the guide repository. In this README you have some tips and all the different sections that your repo's README shoud contain.
 
 # Names
-
-You can provide a table with the names and the contact of all of the participants as follows:
 
 | Name | Mail |
 | ---- | ---- |
@@ -38,5 +36,5 @@ For example
 If convenient, show some examples of the results you obtained during the project. 
     
 # References
-data source: https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data/home
+Data source: https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data/home
 Released UnderCC BY-NC-SA 4.0 

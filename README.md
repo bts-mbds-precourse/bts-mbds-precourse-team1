@@ -15,7 +15,7 @@ Welcome to the bts-mbds-precourse-team1 repository. In this README you will find
 
 # Project Description / Abstract
 
-This project examines a collection of global temperature time series (monthly frequency) for major cities collected by Berkeley Earth from other primary sources.  Various trends and ...
+This project examines a collection of global temperature time series for major cities collected by Berkeley Earth from other primary sources.  The series consists of monthly data starting from 1750 until 2017.  We develop Python code to download the data and convert it into data frames, a format which allows us to write Python code to clean, manipulate, and analyze the data. We further to look for insights from the data, such as the extent of temperature change in major cities and possible factors driving these differences.  
 
 # Dataset
 

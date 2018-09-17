@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy import stats
 
 
 def unknown_rows_per_col(col_name):
@@ -166,6 +167,8 @@ if __name__ == '__main__':
     # TODO: Discuss what are we going to do with the missing values?
     # TODO: Take the average of the same city of x years?
     # TODO: Leaving them out will have a significant impact on the results.
+
+    print(stats.ttest_rel(agg_rolling.loc[1745], agg_rolling.loc[2012]))
 
     print('\nIt works')
 

@@ -8,7 +8,6 @@ Welcome to the bts-mbds-precourse-team1 repository. In this README you will find
 
 | Name | Mail |
 | ---- | ---- |
-| Cen | cen.liang@bts.tech |
 | Chico | francisco.coreas@bts.tech  |
 | Alan  | alan.kwan@bts.tech  |
 | Jonas  | jonas.cristens@bts.tech  |

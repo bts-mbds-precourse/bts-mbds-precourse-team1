@@ -49,7 +49,7 @@ if __name__ == '__main__':
     General data importing
     '''
     # local path to the file containing the temperature data
-    path = '/Users/jonascristens/Documents/BTS/precourse/project/GlobalLandTemperaturesByMajorCity.csv'
+    path = './data_set/GlobalLandTemperaturesByMajorCity.csv'
     # reading the CSV file containing the climate change data
     data = pd.read_csv(path)
 
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     # retrieve the cities which have observations in the year 1744
     agg_y_c = data.groupby(['year', 'City']).mean()
     cities_in_year = agg_y_c.loc[1850].index.values
-    print(len(cities_in_year))
+    # print(len(cities_in_year))
     # print(cities_in_year)
     del agg_y_c
 
@@ -176,7 +176,7 @@ if __name__ == '__main__':
     # regression ==> over the slope calculate the significance (in comparison with 0)
     # bar chart which represent the increase in temperature
 
-    print(stats.ttest_rel(agg_rolling.loc[1850], agg_rolling.loc[2012]))
+    # print(stats.ttest_rel(agg_rolling.loc[1850], agg_rolling.loc[2012]))
 
     agg_rolling.reset_index(level=0, inplace=True)
 

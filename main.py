@@ -1,6 +1,8 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
+import seaborn as sns
 
 
 def unknown_rows_per_col(col_name):
@@ -51,6 +53,7 @@ if __name__ == '__main__':
     # reading the CSV file containing the climate change data
     data = pd.read_csv(path)
 
+
     # convert the dt column to a pandas datetime64 type
     data.loc[:, 'dt'] = pd.to_datetime(data.loc[:, 'dt'], infer_datetime_format=True)
 
@@ -82,10 +85,10 @@ if __name__ == '__main__':
     '''unknown_values2 = unknown_values1.fillna(0)\
         .groupby(['Country', 'City'])\
         .count()\
-        .rename(columns={'AverageTemperature':'number_of_missing_values'})'''
-    # print(unknown_values2)
+        .rename(columns={'AverageTemperature':'number_of_missing_values'})
+    print(unknown_values2)
     # validate the number of rows missing
-    # print(unknown_values.loc[unknown_values['City'] == 'Melbourne', :])
+    # print(unknown_values.loc[unknown_values['City'] == 'Melbourne', :])'''
 
     '''
     Data manipulation to increase the data quality of the data set
@@ -131,13 +134,14 @@ if __name__ == '__main__':
     # print(data.describe())
 
     # the number of occurrences per year
-    un_y_c_c = data.groupby(['year']).nunique()
-    # print(un_y_c_c.loc[1744])
-    del un_y_c_c
+    # un_y_c_c = data.groupby(['year']).nunique()
+    # del un_y_c_c
 
     # retrieve the cities which have observations in the year 1744
     agg_y_c = data.groupby(['year', 'City']).mean()
-    cities_in_year = agg_y_c.loc[1744].index.values
+    cities_in_year = agg_y_c.loc[1850].index.values
+    print(len(cities_in_year))
+    # print(cities_in_year)
     del agg_y_c
 
     # retrieve the count of observations for the cities which have observations since 1744
@@ -150,16 +154,15 @@ if __name__ == '__main__':
     agg_d = data.loc[data['City'].isin(cities_in_year)]\
         .groupby(['year'])\
         .mean()
-
     del cities_in_year
 
     # take the rolling average over a 10 year period where year greater than 1744
-    agg_rolling = agg_d.loc[(agg_d.index > 1744) & (agg_d.index < 2013)].rolling(10, min_periods=1).mean()
+    agg_rolling = agg_d.loc[(agg_d.index >= 1850) & (agg_d.index < 2013)].rolling(10, min_periods=1).mean()
 
     del agg_d
     # del number_of_obs_per_year
 
-    print(agg_rolling)
+    # print(agg_rolling)
 
     agg_rolling.plot.line(y='AverageTemperature')
     plt.show()
@@ -167,8 +170,17 @@ if __name__ == '__main__':
     # TODO: Discuss what are we going to do with the missing values?
     # TODO: Take the average of the same city of x years?
     # TODO: Leaving them out will have a significant impact on the results.
+    # options shrink the data frame
+    # anomaly temperature = current average - avg(over the entire time period) or some other specified time period
+    # missing data, replace it with in different ways interpolation
+    # regression ==> over the slope calculate the significance (in comparison with 0)
+    # bar chart which represent the increase in temperature
 
-    print(stats.ttest_rel(agg_rolling.loc[1745], agg_rolling.loc[2012]))
+    print(stats.ttest_rel(agg_rolling.loc[1850], agg_rolling.loc[2012]))
 
+    agg_rolling.reset_index(level=0, inplace=True)
+
+    sns.lmplot(x='year', y="AverageTemperature", data=agg_rolling.loc[agg_rolling['year'] > 1850, :], order=3)
+    plt.show()
     print('\nIt works')
 

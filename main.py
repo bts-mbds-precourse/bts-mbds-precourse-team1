@@ -155,7 +155,6 @@ if __name__ == '__main__':
         .groupby(['year'])\
         .mean()
 
-
     # take the rolling average over a 10 year period where year greater than 1744
     agg_rolling = agg_d.loc[(agg_d.index >= 1850) & (agg_d.index < 2013)].rolling(10, min_periods=1).mean()
 
@@ -187,16 +186,20 @@ if __name__ == '__main__':
     '''
     bar chart with difference between 1850 and 2012
     '''
+    # get the data from the year 1850 and 2012 for the cities which have data since 1850 also group by year and city
     agg_y_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
         .groupby(['year', 'City']) \
         .mean()
 
     del cities_in_year
 
+    # compare the data in 2012 adn 1850
     sub_old_new = agg_y_c.loc[2012, 'AverageTemperature'] - agg_y_c.loc[1850, 'AverageTemperature']
+    # sort the data in descending order
     sub_old_new = sub_old_new.sort_values(ascending=False)
     # print(sub_old_new)
 
+    # format the bar chart which displays the difference in temperature between 1850 and 2012
     plt.subplots(figsize=(20, 15))
     plt.xlabel('Degree in in celsius (C)', fontsize=14)
     plt.ylabel('Cities', fontsize=14)

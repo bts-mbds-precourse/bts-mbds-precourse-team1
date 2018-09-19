@@ -154,7 +154,7 @@ if __name__ == '__main__':
     agg_d = data.loc[data['City'].isin(cities_in_year)]\
         .groupby(['year'])\
         .mean()
-    del cities_in_year
+
 
     # take the rolling average over a 10 year period where year greater than 1744
     agg_rolling = agg_d.loc[(agg_d.index >= 1850) & (agg_d.index < 2013)].rolling(10, min_periods=1).mean()
@@ -164,8 +164,8 @@ if __name__ == '__main__':
 
     # print(agg_rolling)
 
-    agg_rolling.plot.line(y='AverageTemperature')
-    plt.show()
+    # agg_rolling.plot.line(y='AverageTemperature')
+    # plt.savefig('./figures/pol_reg_rolling_mean_OLD.png')
 
     # TODO: Discuss what are we going to do with the missing values?
     # TODO: Take the average of the same city of x years?
@@ -181,6 +181,28 @@ if __name__ == '__main__':
     agg_rolling.reset_index(level=0, inplace=True)
 
     sns.lmplot(x='year', y="AverageTemperature", data=agg_rolling.loc[agg_rolling['year'] > 1850, :], order=3)
-    plt.show()
+    plt.title('Temperature change in celsius between 1850 and 2012', fontsize=12)
+    plt.savefig('./figures/pol_reg_rolling_mean.png')
+
+    '''
+    bar chart with difference between 1850 and 2012
+    '''
+    agg_y_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
+        .groupby(['year', 'City']) \
+        .mean()
+
+    del cities_in_year
+
+    sub_old_new = agg_y_c.loc[2012, 'AverageTemperature'] - agg_y_c.loc[1850, 'AverageTemperature']
+    sub_old_new = sub_old_new.sort_values(ascending=False)
+    # print(sub_old_new)
+
+    plt.subplots(figsize=(20, 15))
+    plt.xlabel('Degree in in celsius (C)', fontsize=14)
+    plt.ylabel('Cities', fontsize=14)
+    plt.title('Temperature change in celsius between 1850 and 2012', fontsize=20)
+    sns.barplot(x=sub_old_new.values, y=sub_old_new.index.values, orient='h', palette="GnBu_d")
+    plt.savefig('./figures/increase_1850_2012.png')
+
     print('\nIt works')
 

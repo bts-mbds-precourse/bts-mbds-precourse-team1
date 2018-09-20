@@ -254,18 +254,14 @@ if __name__ == '__main__':
         .groupby(['year', 'Longitude_bin', 'Latitude_bin']).mean()
     agg_bin_c_lat_lon = agg_bin_c_lat_lon.loc[2012, 'AverageTemperature'] - agg_bin_c_lat_lon.loc[1850, 'AverageTemperature']
 
-    agg_bin_c_lat_lon = agg_bin_c_lat_lon.reset_index()
-    print(agg_bin_c_lat_lon)
+    agg_bin_c_lat_lon = agg_bin_c_lat_lon.reset_index('Latitude_bin')
+    agg_bin_c_lat_lon = agg_bin_c_lat_lon.pivot(columns='Latitude_bin', values='AverageTemperature')
 
-    plt.subplots(figsize=(10, 8))
+    plt.subplots(figsize=(15, 10))
     plt.title('Temperature change in celsius for latitude and longitude')
+    sns.heatmap(agg_bin_c_lat_lon)
     plt.xlabel('The longitude in bins of 10')
     plt.ylabel('The latitude in bins of 10')
-    sns.scatterplot(agg_bin_c_lat_lon.Longitude_bin.values,\
-                    agg_bin_c_lat_lon.Latitude_bin.values,\
-                    hue=agg_bin_c_lat_lon.AverageTemperature.values,\
-                    size=agg_bin_c_lat_lon.AverageTemperature.values
-                    )
     plt.savefig('./figures/increase_1850_2012_lat_lon_bin.png')
 
     print('\nIt works')

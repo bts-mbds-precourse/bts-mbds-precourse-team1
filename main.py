@@ -120,7 +120,7 @@ if __name__ == '__main__':
     check the data quality again
     '''
     # display the count of rows where the specified column is missing
-    missing_stats()
+    # missing_stats()
 
     # conclusion: there aren't missing data ==> data is clean and ready for analysis
 
@@ -161,8 +161,6 @@ if __name__ == '__main__':
     del agg_d
     # del number_of_obs_per_year
 
-    # print(agg_rolling)
-
     # agg_rolling.plot.line(y='AverageTemperature')
     # plt.savefig('./figures/pol_reg_rolling_mean_OLD.png')
 
@@ -179,9 +177,16 @@ if __name__ == '__main__':
 
     agg_rolling.reset_index(level=0, inplace=True)
 
-    sns.lmplot(x='year', y="AverageTemperature", data=agg_rolling.loc[agg_rolling['year'] > 1850, :], order=3)
+    '''
+    Visualization part
+    '''
+    sns.lmplot(x='year', y="AverageTemperature", data=agg_rolling.loc[agg_rolling['year'] > 1850, :], order=3, height=10, aspect=1.4)
     plt.title('Temperature change in celsius between 1850 and 2012', fontsize=12)
+    plt.xlabel('years')
+    plt.ylabel('Average temperature in celsius')
+    plt.tight_layout()
     plt.savefig('./figures/pol_reg_rolling_mean.png')
+    plt.clf()
 
     '''
     bar chart with difference between 1850 and 2012
@@ -190,8 +195,6 @@ if __name__ == '__main__':
     agg_y_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
         .groupby(['year', 'City']) \
         .mean()
-
-    del cities_in_year
 
     # compare the data in 2012 adn 1850
     sub_old_new = agg_y_c.loc[2012, 'AverageTemperature'] - agg_y_c.loc[1850, 'AverageTemperature']
@@ -206,6 +209,64 @@ if __name__ == '__main__':
     plt.title('Temperature change in celsius between 1850 and 2012', fontsize=20)
     sns.barplot(x=sub_old_new.values, y=sub_old_new.index.values, orient='h', palette="GnBu_d")
     plt.savefig('./figures/increase_1850_2012.png')
+    plt.clf()
+
+    '''
+    bin data per latitude and longitude
+    '''
+
+    #bins = pd.IntervalIndex.from_tuples([(i, i+9.99) for i in np.arange(0, 100, 10)])
+
+    bins = [i for i in np.arange(0, 80, 10)]
+    labels = ['{} - {}'.format(b, b+10) for b in bins[0:-1]]
+
+    data['Latitude_bin'] = pd.cut(pd.to_numeric(data['Latitude'].str[:-2], errors='coerce'), bins=bins, labels=labels)
+    data['Longitude_bin'] = pd.cut(pd.to_numeric(data['Longitude'].str[:-2], errors='coerce'), bins=bins, labels=labels)
+
+    agg_bin_c_lon = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))]\
+        .groupby(['year', 'Longitude_bin']).mean()
+
+    agg_bin_c_lat = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
+        .groupby(['year', 'Latitude_bin']).mean()
+
+    agg_bin_c_lon = agg_bin_c_lon.loc[2012, 'AverageTemperature'] - agg_bin_c_lon.loc[1850, 'AverageTemperature']
+    agg_bin_c_lat = agg_bin_c_lat.loc[2012, 'AverageTemperature'] - agg_bin_c_lat.loc[1850, 'AverageTemperature']
+    agg_bin_c_lon.sort_values(ascending=False, inplace=True)
+
+    plt.subplots(figsize=(15, 10))
+    plt.title('Temperature change in celsius for the longitude')
+    plt.xlabel('Change in temperature in celsius')
+    plt.ylabel('The longitude in bins of 10')
+    sns.barplot(x=agg_bin_c_lon.values, y=agg_bin_c_lon.index.values, orient='h', palette="GnBu_d")
+    plt.savefig('./figures/increase_1850_2012_lon_bin.png')
+    plt.clf()
+
+    plt.subplots(figsize=(15, 10))
+    plt.title('Temperature change in celsius for the latitude')
+    plt.xlabel('Change in temperature in celsius')
+    plt.ylabel('The latitude in bins of 10')
+    sns.barplot(x=agg_bin_c_lat.values, y=agg_bin_c_lat.index.values, orient='h', palette="GnBu_d")
+    plt.savefig('./figures/increase_1850_2012_lat_bin.png')
+    plt.clf()
+
+
+    agg_bin_c_lat_lon = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
+        .groupby(['year', 'Longitude_bin', 'Latitude_bin']).mean()
+    agg_bin_c_lat_lon = agg_bin_c_lat_lon.loc[2012, 'AverageTemperature'] - agg_bin_c_lat_lon.loc[1850, 'AverageTemperature']
+
+    agg_bin_c_lat_lon = agg_bin_c_lat_lon.reset_index()
+    print(agg_bin_c_lat_lon)
+
+    plt.subplots(figsize=(10, 8))
+    plt.title('Temperature change in celsius for latitude and longitude')
+    plt.xlabel('The longitude in bins of 10')
+    plt.ylabel('The latitude in bins of 10')
+    sns.scatterplot(agg_bin_c_lat_lon.Longitude_bin.values,\
+                    agg_bin_c_lat_lon.Latitude_bin.values,\
+                    hue=agg_bin_c_lat_lon.AverageTemperature.values,\
+                    size=agg_bin_c_lat_lon.AverageTemperature.values
+                    )
+    plt.savefig('./figures/increase_1850_2012_lat_lon_bin.png')
 
     print('\nIt works')
 

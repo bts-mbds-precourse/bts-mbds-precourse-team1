@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import stats
 import seaborn as sns
+import matplotlib
 
 
 def unknown_rows_per_col(col_name):
@@ -214,14 +215,13 @@ if __name__ == '__main__':
     '''
     bin data per latitude and longitude
     '''
-
     #bins = pd.IntervalIndex.from_tuples([(i, i+9.99) for i in np.arange(0, 100, 10)])
 
-    bins = [i for i in np.arange(0, 80, 10)]
+    bins = [i for i in np.arange(0, 150, 10)]
     labels = ['{} - {}'.format(b, b+10) for b in bins[0:-1]]
 
-    data['Latitude_bin'] = pd.cut(pd.to_numeric(data['Latitude'].str[:-2], errors='coerce'), bins=bins, labels=labels)
-    data['Longitude_bin'] = pd.cut(pd.to_numeric(data['Longitude'].str[:-2], errors='coerce'), bins=bins, labels=labels)
+    data['Latitude_bin'] = pd.cut(pd.to_numeric(data['Latitude'].str[:-1], errors='coerce'), bins=bins, labels=labels)
+    data['Longitude_bin'] = pd.cut(pd.to_numeric(data['Longitude'].str[:-1], errors='coerce'), bins=bins, labels=labels)
 
     agg_bin_c_lon = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))]\
         .groupby(['year', 'Longitude_bin']).mean()
@@ -231,7 +231,6 @@ if __name__ == '__main__':
 
     agg_bin_c_lon = agg_bin_c_lon.loc[2012, 'AverageTemperature'] - agg_bin_c_lon.loc[1850, 'AverageTemperature']
     agg_bin_c_lat = agg_bin_c_lat.loc[2012, 'AverageTemperature'] - agg_bin_c_lat.loc[1850, 'AverageTemperature']
-    agg_bin_c_lon.sort_values(ascending=False, inplace=True)
 
     plt.subplots(figsize=(15, 10))
     plt.title('Temperature change in celsius for the longitude')
@@ -249,7 +248,6 @@ if __name__ == '__main__':
     plt.savefig('./figures/increase_1850_2012_lat_bin.png')
     plt.clf()
 
-
     agg_bin_c_lat_lon = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
         .groupby(['year', 'Longitude_bin', 'Latitude_bin']).mean()
     agg_bin_c_lat_lon = agg_bin_c_lat_lon.loc[2012, 'AverageTemperature'] - agg_bin_c_lat_lon.loc[1850, 'AverageTemperature']
@@ -263,6 +261,50 @@ if __name__ == '__main__':
     plt.xlabel('The longitude in bins of 10')
     plt.ylabel('The latitude in bins of 10')
     plt.savefig('./figures/increase_1850_2012_lat_lon_bin.png')
+    plt.clf()
+
+    '''
+    Distribution plot
+    '''
+    agg_bin_c_lat_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))]\
+        .groupby(['year', 'Latitude_bin', 'City']).mean().dropna()
+
+    print(agg_bin_c_lat_c)
+
+    for i in labels:
+        print('Bin: {} \n Cities: {}'.format(i, agg_bin_c_lat_c.loc[agg_bin_c_lat_c.index.get_level_values(level = 'Latitude_bin') == i]))
+
+    agg_bin_c_lat_c = agg_bin_c_lat_c.loc[2012, 'AverageTemperature'] - agg_bin_c_lat_c.loc[1850, 'AverageTemperature']
+    agg_bin_c_lat_c = agg_bin_c_lat_c.dropna()
+    agg_bin_c_lat_c = agg_bin_c_lat_c.reset_index(level=['City'], drop=True)
+    agg_bin_c_lat_c = agg_bin_c_lat_c.reset_index(level=['Latitude_bin'])
+    agg_bin_c_lat_c = agg_bin_c_lat_c.groupby('Latitude_bin').size()
+
+    current_palette = matplotlib.colors.hex2color('#86b92e')
+    sns.barplot(agg_bin_c_lat_c.index.values, agg_bin_c_lat_c.values, color=current_palette)
+    plt.xlabel('The latitude in bins of 10')
+    plt.ylabel('The number of occurrences')
+    plt.title('The number of occurrences for the latitude in bins of 10')
+    plt.savefig('./figures/latitude_distribution.png')
+
+    agg_bin_c_lon_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
+        .groupby(['year', 'Longitude_bin', 'City']).mean().dropna()
+
+    for i in labels:
+        print('Bin: {} \n Cities: {}'.format(i, agg_bin_c_lon_c.loc[agg_bin_c_lon_c.index.get_level_values(level = 'Longitude_bin') == i]))
+
+
+    agg_bin_c_lon_c = agg_bin_c_lon_c.loc[2012, 'AverageTemperature'] - agg_bin_c_lon_c.loc[1850, 'AverageTemperature']
+    agg_bin_c_lon_c = agg_bin_c_lon_c.dropna()
+    agg_bin_c_lon_c = agg_bin_c_lon_c.reset_index(level=['City'], drop=True)
+    agg_bin_c_lon_c = agg_bin_c_lon_c.reset_index(level=['Longitude_bin'])
+    agg_bin_c_lon_c = agg_bin_c_lon_c.groupby('Longitude_bin').size()
+
+    current_palette = matplotlib.colors.hex2color('#86b92e')
+    sns.barplot(agg_bin_c_lat_c.index.values, agg_bin_c_lat_c.values, color=current_palette)
+    plt.xlabel('The longitude in bins of 10')
+    plt.ylabel('The number of occurrences')
+    plt.title('The number of occurrences for the longitude in bins of 10')
+    plt.savefig('./figures/longitude_distribution.png')
 
     print('\nIt works')
-

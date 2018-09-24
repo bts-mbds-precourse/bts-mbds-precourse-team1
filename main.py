@@ -286,6 +286,7 @@ if __name__ == '__main__':
     plt.ylabel('The number of occurrences')
     plt.title('The number of occurrences for the latitude in bins of 10')
     plt.savefig('./figures/latitude_distribution.png')
+    plt.clf()
 
     agg_bin_c_lon_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
         .groupby(['year', 'Longitude_bin', 'City']).mean().dropna()
@@ -300,10 +301,11 @@ if __name__ == '__main__':
     agg_bin_c_lon_c = agg_bin_c_lon_c.groupby('Longitude_bin').size()
 
     current_palette = matplotlib.colors.hex2color('#86b92e')
-    sns.barplot(agg_bin_c_lat_c.index.values, agg_bin_c_lat_c.values, color=current_palette)
+    sns.barplot(agg_bin_c_lon_c.index.values, agg_bin_c_lon_c.values, color=current_palette)
     plt.xlabel('The longitude in bins of 10')
     plt.ylabel('The number of occurrences')
     plt.title('The number of occurrences for the longitude in bins of 10')
     plt.savefig('./figures/longitude_distribution.png')
+    plt.clf()
 
     print('\nIt works')

@@ -217,11 +217,13 @@ if __name__ == '__main__':
     '''
     #bins = pd.IntervalIndex.from_tuples([(i, i+9.99) for i in np.arange(0, 100, 10)])
 
-    bins = [i for i in np.arange(0, 150, 10)]
-    labels = ['{} - {}'.format(b, b+10) for b in bins[0:-1]]
+    lat_bins = [i for i in np.arange(0, 80, 10)]
+    lon_bins = [i for i in np.arange(0, 150, 10)]
+    lat_labels = ['{} - {}'.format(b, b+10) for b in lat_bins[0:-1]]
+    lon_labels = ['{} - {}'.format(b, b + 10) for b in lon_bins[0:-1]]
 
-    data['Latitude_bin'] = pd.cut(pd.to_numeric(data['Latitude'].str[:-1], errors='coerce'), bins=bins, labels=labels)
-    data['Longitude_bin'] = pd.cut(pd.to_numeric(data['Longitude'].str[:-1], errors='coerce'), bins=bins, labels=labels)
+    data['Latitude_bin'] = pd.cut(pd.to_numeric(data['Latitude'].str[:-1], errors='coerce'), bins=lat_bins, labels=lat_labels)
+    data['Longitude_bin'] = pd.cut(pd.to_numeric(data['Longitude'].str[:-1], errors='coerce'), bins=lon_bins, labels=lon_labels)
 
     agg_bin_c_lon = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))]\
         .groupby(['year', 'Longitude_bin']).mean()
@@ -258,8 +260,8 @@ if __name__ == '__main__':
     plt.subplots(figsize=(15, 10))
     plt.title('Temperature change in celsius for latitude and longitude')
     sns.heatmap(agg_bin_c_lat_lon)
-    plt.xlabel('The longitude in bins of 10')
-    plt.ylabel('The latitude in bins of 10')
+    plt.xlabel('The latitude in bins of 10')
+    plt.ylabel('The longitude in bins of 10')
     plt.savefig('./figures/increase_1850_2012_lat_lon_bin.png')
     plt.clf()
 
@@ -269,9 +271,7 @@ if __name__ == '__main__':
     agg_bin_c_lat_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))]\
         .groupby(['year', 'Latitude_bin', 'City']).mean().dropna()
 
-    print(agg_bin_c_lat_c)
-
-    for i in labels:
+    for i in lat_labels:
         print('Bin: {} \n Cities: {}'.format(i, agg_bin_c_lat_c.loc[agg_bin_c_lat_c.index.get_level_values(level = 'Latitude_bin') == i]))
 
     agg_bin_c_lat_c = agg_bin_c_lat_c.loc[2012, 'AverageTemperature'] - agg_bin_c_lat_c.loc[1850, 'AverageTemperature']
@@ -290,9 +290,8 @@ if __name__ == '__main__':
     agg_bin_c_lon_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
         .groupby(['year', 'Longitude_bin', 'City']).mean().dropna()
 
-    for i in labels:
+    for i in lon_labels:
         print('Bin: {} \n Cities: {}'.format(i, agg_bin_c_lon_c.loc[agg_bin_c_lon_c.index.get_level_values(level = 'Longitude_bin') == i]))
-
 
     agg_bin_c_lon_c = agg_bin_c_lon_c.loc[2012, 'AverageTemperature'] - agg_bin_c_lon_c.loc[1850, 'AverageTemperature']
     agg_bin_c_lon_c = agg_bin_c_lon_c.dropna()

@@ -106,8 +106,11 @@ if __name__ == '__main__':
 
     # fill the missing values for the column AverageTemperature with the mean per country, city and month
     data['AverageTemperature'] = data\
-        .groupby(['City', 'Country', 'month'])['AverageTemperature']\
+        .groupby(['City', 'Country','month'])['AverageTemperature']\
         .transform(lambda x: x.fillna(x.mean()))
+#    data['AverageTemperature'] = data\
+#        .groupby(['City'])['AverageTemperature']\
+#        .transform(lambda x: x.fillna(x.interpolate()))
     # fill the missing values for the column AverageTemperatureUncertainty with the mean per country, city and month
     data['AverageTemperatureUncertainty'] = data\
         .groupby(['City', 'Country', 'month'])['AverageTemperatureUncertainty']\

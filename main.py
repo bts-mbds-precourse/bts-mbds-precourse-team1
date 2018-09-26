@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import seaborn as sns
 import matplotlib
-from statsmodels.tsa.statespace.sarimax import SARIMAX
-from sklearn.metrics import mean_squared_error
+import statsmodels.api as sm
+import itertools
+import warnings
 
 def unknown_rows_per_col(col_name):
     """
@@ -41,6 +42,7 @@ def missing_stats():
 
 
 if __name__ == '__main__':
+    warnings.filterwarnings("ignore")  # specify to ignore warning messages
 
     # pandas settings information
     pd.set_option('display.max_rows', 50)
@@ -313,33 +315,86 @@ if __name__ == '__main__':
 
     # print(agg_c)
 
-    agg_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
-        .groupby(['year', 'Country']) \
+    agg_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'] >= 1850)]\
+        .drop(['year', 'AverageTemperatureUncertainty'], axis=1) \
+        .groupby(['dt']) \
         .mean()
 
-    agg_c = agg_c.loc[2012, 'AverageTemperature'] - agg_c.loc[1850, 'AverageTemperature']
+    # Define the p, d and q parameters to take any value between 0 and 2
+    p = d = q = range(0, 2)
+
+    # Generate all different combinations of p, q and q triplets
+    pdq = list(itertools.product(p, d, q))
+
+    # Generate all different combinations of seasonal p, q and q triplets
+    seasonal_pdq = [(x[0], x[1], x[2], 12) for x in list(itertools.product(p, d, q))]
+
+    print('Examples of parameter combinations for Seasonal ARIMA...')
+    print('SARIMAX: {} x {}'.format(pdq[1], seasonal_pdq[1]))
+    print('SARIMAX: {} x {}'.format(pdq[1], seasonal_pdq[2]))
+    print('SARIMAX: {} x {}'.format(pdq[2], seasonal_pdq[3]))
+    print('SARIMAX: {} x {}'.format(pdq[2], seasonal_pdq[4]))
 
     size = int(len(agg_c) * 0.75)
-    test, train = agg_c[0:size], agg_c[size:len(agg_c)]
-    history = [x for x in train]
-    predictions = list()
-    for t in range(len(test)):
-        model = SARIMAX(history, order=(2, 1, 1), enforce_stationarity=False, enforce_invertibility=False)
-        model_fit = model.fit()
-        output = model_fit.forecast()
-        yhat = output[0]
-        predictions.append(yhat)
-        obs = test[t]
-        history.append(obs)
-        print('predicted=%f, expected=%f' % (yhat, obs))
-    error = mean_squared_error(test, predictions)
-    print('Test MSE: %.3f' % error)
-    print(model_fit.summary())
+    train = agg_c[:]
 
-    predict = model_fit.get_prediction()
+    '''
+    for param in pdq:
+        for param_seasonal in seasonal_pdq:
+            try:
+                mod = sm.tsa.statespace.SARIMAX(train,
+                                                order=param,
+                                                seasonal_order=param_seasonal,
+                                                enforce_stationarity=False,
+                                                enforce_invertibility=False)
 
-    plt.plot(range(len(predict.predicted_mean)), predict.predicted_mean)
+                results = mod.fit()
+                print('ARIMA{}x{}12 - AIC:{}'.format(param, param_seasonal, results.aic))
+            except:
+                continue
+    '''
+
+    mod = sm.tsa.statespace.SARIMAX(train,
+                                    order=(1, 1, 1),
+                                    seasonal_order=(1, 1, 1, 12),
+                                    enforce_stationarity=False,
+                                    enforce_invertibility=False)
+    
+    results = mod.fit()
+
+    print(results.summary().tables[1])
+
+    results.plot_diagnostics(figsize=(15, 12))
     plt.show()
 
-    print(model_fit.get_prediction(2013, 2050).conf_int())
+    pred = results.get_prediction(start=pd.to_datetime('1950-01-01'), end=pd.to_datetime('2050-12-01'), dynamic=False)
+    pred_ci = pred.conf_int()
+    pred_ci['year'] = pred_ci.index.year
+
+    pred_ci.reset_index(inplace=True)
+    pred_ci = pred_ci.drop(['index'], axis=1)\
+        .groupby('year')\
+        .mean()
+    pred_ci_roll = pred_ci.rolling(10, min_periods=1).mean()
+    pred_ci_roll['cur_or_pred'] = 'Predicted'
+    pred_ci_roll['AverageTemperature'] = (pred_ci_roll['lower AverageTemperature'] + pred_ci_roll['upper AverageTemperature']) / 2
+
+    agg_rolling = agg_rolling.loc[agg_rolling['year'] > 1850].groupby(['year']).mean()
+    agg_rolling['cur_or_pred'] = 'Current'
+
+    melted_data_set = pd.concat([agg_rolling, pred_ci_roll], axis=0, join='outer', join_axes=None, ignore_index=False,
+              keys=None, levels=None, names=None, verify_integrity=False,
+              copy=True)
+    #melted_data_set.reset_index(inplace=True)
+
+    plt.subplots(figsize=(15, 10))
+    sns.lineplot(x=melted_data_set.index.values,
+               y="AverageTemperature",
+               data=melted_data_set,
+               hue='cur_or_pred')
+    plt.title('Average temperature prediction until 2030')
+    plt.ylabel('Average temperature')
+    plt.savefig('./figures/average_temperature_prediction.png')
+    plt.clf()
+
     print('\nIt works')

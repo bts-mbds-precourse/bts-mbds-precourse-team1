@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import seaborn as sns
 import matplotlib
-
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from sklearn.metrics import mean_squared_error
 
 def unknown_rows_per_col(col_name):
     """
@@ -271,6 +272,8 @@ if __name__ == '__main__':
     agg_bin_c_lat_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))]\
         .groupby(['year', 'Latitude_bin', 'City']).mean().dropna()
 
+    # print(agg_bin_c_lat_c.loc[(agg_bin_c_lat_c.index.get_level_values(level=0) == 2012) & (agg_bin_c_lat_c.index.get_level_values(level=1) == '40 - 50')].index.get_level_values(level=2) )
+
     for i in lat_labels:
         print('Bin: {} \n Cities: {}'.format(i, agg_bin_c_lat_c.loc[agg_bin_c_lat_c.index.get_level_values(level = 'Latitude_bin') == i]))
 
@@ -308,4 +311,35 @@ if __name__ == '__main__':
     plt.savefig('./figures/longitude_distribution.png')
     plt.clf()
 
+    # print(agg_c)
+
+    agg_c = data.loc[(data['City'].isin(cities_in_year)) & (data['year'].isin([1850, 2012]))] \
+        .groupby(['year', 'Country']) \
+        .mean()
+
+    agg_c = agg_c.loc[2012, 'AverageTemperature'] - agg_c.loc[1850, 'AverageTemperature']
+
+    size = int(len(agg_c) * 0.75)
+    test, train = agg_c[0:size], agg_c[size:len(agg_c)]
+    history = [x for x in train]
+    predictions = list()
+    for t in range(len(test)):
+        model = SARIMAX(history, order=(2, 1, 1), enforce_stationarity=False, enforce_invertibility=False)
+        model_fit = model.fit()
+        output = model_fit.forecast()
+        yhat = output[0]
+        predictions.append(yhat)
+        obs = test[t]
+        history.append(obs)
+        print('predicted=%f, expected=%f' % (yhat, obs))
+    error = mean_squared_error(test, predictions)
+    print('Test MSE: %.3f' % error)
+    print(model_fit.summary())
+
+    predict = model_fit.get_prediction()
+
+    plt.plot(range(len(predict.predicted_mean)), predict.predicted_mean)
+    plt.show()
+
+    print(model_fit.get_prediction(2013, 2050).conf_int())
     print('\nIt works')

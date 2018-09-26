@@ -501,7 +501,7 @@ if __name__ == '__main__':
 
     print(model_fit.get_prediction(2013, 2050).conf_int())
     print('\nIt works')
-=======
+
     #for data with means replacing NaN
 #    agg_d2 = data2.loc[data2['City'].isin(cities_in_year)]\
 #        .groupby(['year'])\

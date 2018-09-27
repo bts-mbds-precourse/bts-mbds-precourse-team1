@@ -249,8 +249,8 @@ if __name__ == '__main__':
     L.get_texts()[1].set_text('Interpolation')
     L.get_texts()[2].set_text('Monthly Mean')
     L.get_texts()[3].set_text('Interpolated Monthly Mean')
-    plt.show()
     plt.savefig('./figures/delhi_time_series.png')
+    plt.show()
     plt.clf()
 #
 #     # TODO discuss: observations missing for some countries
@@ -331,8 +331,8 @@ if __name__ == '__main__':
     L.get_texts()[0].set_text('Interpolation')
     L.get_texts()[1].set_text('Monthly Mean')
     L.get_texts()[2].set_text('Interpolated Monthly Mean')
-    plt.show()
     plt.savefig('./figures/mean_temp_vs_nan_strategy.png')
+    plt.show()
     plt.clf()
 
     agg_rolling.reset_index(level=0, inplace=True)

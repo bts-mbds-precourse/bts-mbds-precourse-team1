@@ -64,7 +64,7 @@ You can dowload the data set via the following link: [https://www.kaggle.com/ber
 **Increase in temperature between 1850 and 2012 in bins of 10 for latitude and longitude:** 
 ![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/increase_1850_2012_lat_lon_bin.png "Increase in temperature in bins of 10 for latitude and longitude")
 
-**For more result go to:**
+**For more graphs go to:**
 [link to the plots](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/tree/master/figures)
     
 # References

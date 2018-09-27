@@ -63,9 +63,6 @@ You can dowload the dataset via the following link: https://www.kaggle.com/berke
 
 **For more result go to:**
 [links to the plots](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/tree/master/figures)
-
-**Work in progress**
-If convenient, show some examples of the results you obtained during the project. 
     
 # References
 Data source: https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data/home

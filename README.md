@@ -49,11 +49,21 @@ You can dowload the dataset via the following link: https://www.kaggle.com/berke
 
 # Examples
 
-Average temperatue prediction: 
+**Average temperatue prediction: **
 ![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/average_temperature_prediction.png "temperature prediction")
 
-Average temperatue from 1850 untill 2012: 
+**Average temperatue (rolling 10 year average) from 1850 untill 2012:** 
 ![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/pol_reg_rolling_mean.png "average temperature")
+
+**Increase in temperature between per city 1850 untill 2012:** 
+![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/increase_1850_2012.png "average temperature increase per city between 1850 and 2012")
+
+**Increase in temperature in bins of 10 for latitude and longitude:** 
+![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/increase_1850_2012_lat_lon_bin.png "Increase in temperature in bins of 10 for latitude and longitude")
+
+**For more result go to:**
+[links to the plots](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/tree/master/figures)
+
 **Work in progress**
 If convenient, show some examples of the results you obtained during the project. 
     

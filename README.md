@@ -31,7 +31,6 @@ The data set contains the following 7 columns:
 * Longitude: the longitude where the temperature was measured
 
 # Files and usage
-**Work in progress**
 The files available in this project are the following:
 * main.py
 
@@ -43,7 +42,18 @@ For example
 
     python main.py
     
+**Note:** don't forget to put the dataset (GlobalLandTemperaturesByMajorCity.csv) in the following folder:
+* /data_set
+
+You can dowload the dataset via the following link: https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data#GlobalTemperatures.csv
+
 # Examples
+
+Average temperatue prediction: 
+![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/average_temperature_prediction.png "temperature prediction")
+
+Average temperatue from 1850 untill 2012: 
+![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/pol_reg_rolling_mean.png "average temperature")
 **Work in progress**
 If convenient, show some examples of the results you obtained during the project. 
     

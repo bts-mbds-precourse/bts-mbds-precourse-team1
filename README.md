@@ -2,7 +2,7 @@
 
 Welcome to the bts-mbds-precourse-team1 repository. In this README you will find all the information needed to start using this project to analyse the 'Climate Change: Earth Surface Temperature Data'. 
 
-**Last Update: September 28, 2018**
+**Last update: September 28, 2018**
 
 # Names and contact information
 
@@ -56,10 +56,10 @@ You can dowload the data set via the following link: [https://www.kaggle.com/ber
 
 # Examples
 
-**Average temperatue prediction:**
+**Average temperature prediction:**
 ![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/average_temperature_prediction.png "temperature prediction untill 2050")
 
-**Average temperatue (rolling 10 year average) from 1850 untill 2012:** 
+**Average temperature (rolling 10 year average) from 1850 untill 2012:** 
 ![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/pol_reg_rolling_mean.png "average temperature over time")
 
 **Increase in temperature per city between 1850 and 2012:** 

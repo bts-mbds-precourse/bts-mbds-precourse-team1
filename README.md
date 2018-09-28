@@ -12,7 +12,9 @@ Welcome to the bts-mbds-precourse-team1 repository. In this README you will find
 
 # Project Description / Abstract
 
-This project examines a collection of global temperature time series for major cities collected by Berkeley Earth. The series consists of monthly data starting from 1750 until 2013. We developed Python code to parse, clean, manipulate, and analyze the data. We look for insights e.g. are some areas in the world more affected than others?, ... 
+This project examines a collection of global temperature time series for major cities collected by Berkeley Earth. The series consists of monthly data starting from 1750 until 2013. We developed Python code to parse, clean, manipulate, and analyze the data, allowing us to gain insights about how much temperatures have changed over time, how the rate of warming has changed, and how the warming varies geographically. Finally, we developed an ARIMA (autoregressive integrated moving average) model based on the data to project future temperature changes.
+
+The analysis shows significant warming overall, particularly starting around 1920.  Although all regions studied experienced warming, the amount was not uniform geographically.  The ARIMA model projects the warming trend to continue in the future.
 
 # Dataset
 
@@ -34,7 +36,7 @@ The files and folders available in this project are the following:
 * /figures
   * contains graphs made during this project e.g. the average temperature between 1850 and 2012
 * /data_set
-  * you have to put the climate change data set here ([click here to download the data set](https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data#GlobalTemperatures.csv)) 
+  * you have to put the climate change data set here.  ([click here to download the data set](https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data#GlobalTemperatures.csv))  main.py will look in this folder for the data set when it runs 
   * Note: put following CSV in this folder (from the link above) GlobalLandTemperaturesByMajorCity.csv
 
 For example
@@ -52,7 +54,7 @@ You can dowload the data set via the following link: [https://www.kaggle.com/ber
 
 # Examples
 
-**Average temperatue prediction: **
+**Average temperatue prediction:**
 ![alt text](https://github.com/bts-mbds-precourse/bts-mbds-precourse-team1/blob/master/figures/average_temperature_prediction.png "temperature prediction untill 2050")
 
 **Average temperatue (rolling 10 year average) from 1850 untill 2012:** 

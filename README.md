@@ -2,6 +2,8 @@
 
 Welcome to the bts-mbds-precourse-team1 repository. In this README you will find all the information needed to start using this project to analyse the 'Climate Change: Earth Surface Temperature Data'. 
 
+**Last Update: September 28, 2018**
+
 # Names and contact information
 
 | Name | Mail |
